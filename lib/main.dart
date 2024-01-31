@@ -24,64 +24,69 @@ class CalculatorApp extends StatefulWidget {
 }
 
 class _CalculatorAppState extends State<CalculatorApp> {
-  late double firstNum = 0;
-  late double secondNum = 0;
-  late String history = '';
-  late String textToDisplay = '';
-  late String operation = '';
-
+   double firstNum = 0 ;
+   double secondNum = 0;
+   String history = '';
+   String textToDisplay = '';
+   String operation = '';
+  
   void btnOnClick(String btnVal) {
-    if (btnVal == 'C') {
-      setState(() {
-        textToDisplay = '';
-        firstNum = 0;
-        secondNum = 0;
-
-      });
-    } else if (btnVal == 'AC') {
-      setState(() {
-        textToDisplay = '';
-        firstNum = 0;
-        secondNum = 0;
-        history = '';
-      });
-    } else if (btnVal == '+/-') {
-      setState(() {
-        if (textToDisplay.startsWith('-')) {
-          textToDisplay = textToDisplay.substring(1);
-        } else {
-          textToDisplay = '-$textToDisplay';
-        }
-      });
-    } else if (btnVal == '+' || btnVal == '-' || btnVal == 'X' || btnVal == '/') {
-      setState(() {
-        firstNum = double.parse(textToDisplay)  ;
-        textToDisplay = '';
+  switch (btnVal) {
+    case 'AC':
+      textToDisplay = '';
+      firstNum = 0;
+      secondNum = 0;
+      history = '';
+      operation = '';
+      break;
+    case 'C':
+      textToDisplay = '';
+      break;
+    case '<>':
+      textToDisplay = textToDisplay.substring(0, textToDisplay.length - 1);
+      break;
+    case '+':
+    case '-':
+    case 'X':
+    case '/':
+      if (textToDisplay != '') {
+        firstNum = double.parse(textToDisplay);
         operation = btnVal;
-      });
-    } else if (btnVal == '=') {
-        secondNum = double.parse(textToDisplay);
-        if (operation == '+') {
-          textToDisplay = (firstNum + secondNum).toString();
-          history = '$firstNum $operation $secondNum';
-
-        } else if (operation == '-') {
-          textToDisplay = (firstNum - secondNum).toString();
-          history = '$firstNum $operation $secondNum = $textToDisplay\n' + history;
-
-        } else if (operation == 'X') {
-          textToDisplay = (firstNum * secondNum).toString();
-          history = '$firstNum $operation $secondNum = $textToDisplay\n' + history;
-        } else if (operation == '/') {
-          textToDisplay = (firstNum / secondNum).toString();
-          history = '$firstNum $operation $secondNum = $textToDisplay\n' + history;
+        textToDisplay += btnVal;
+      }
+      break;
+    case '=':
+      if (textToDisplay != '') {
+        secondNum = double.parse(textToDisplay.substring(textToDisplay.lastIndexOf(operation) + 1));
+        switch (operation) {
+          case '+':
+            textToDisplay = (firstNum + secondNum).toString();
+            history = '$firstNum $operation $secondNum';
+            break;
+          case '-':
+            textToDisplay = (firstNum - secondNum).toString();
+            history = '$firstNum $operation $secondNum';
+            break;
+          case 'X':
+            textToDisplay = (firstNum * secondNum).toString();
+            history = '$firstNum $operation $secondNum';
+            break;
+          case '/':
+            textToDisplay = (firstNum / secondNum).toString();
+            history = '$firstNum $operation $secondNum';
+            break;
         }
-    } else {
+        operation = '';
+        firstNum = double.parse(textToDisplay);
+      }
+      break;
+    default:
       textToDisplay += btnVal;
-    }
-    setState(() {});
   }
+  setState(() {});
+}
 
+ 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
